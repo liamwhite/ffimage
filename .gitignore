@@ -1,0 +1,5 @@
+# Extconf
+Makefile
+*.o
+*.so
+mkmf.log

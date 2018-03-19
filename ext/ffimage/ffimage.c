@@ -12,4 +12,7 @@ void Init_ffimage()
     Init_libjpeg();
     Init_librsvg();
     Init_libffmpeg();
+
+    rb_require("ffimage/libpng");
+    rb_require("ffimage/libgif");
 }

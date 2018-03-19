@@ -65,6 +65,10 @@ static VALUE rb_libavformat_initialize(VALUE self, VALUE buf)
         rb_raise(rb_eException, "%s", av_err2str(ret));
     }
 
+    if ((ret = avformat_find_stream_info(obj->format, NULL))) {
+        rb_raise(rb_eException, "%s", av_err2str(ret));
+    }
+
     return Qnil;
 }
 
@@ -72,12 +76,6 @@ static VALUE rb_libavformat_dimensions(VALUE self)
 {
     struct libavformat_object *obj;
     Data_Get_Struct(self, struct libavformat_object, obj);
-
-    int ret;
-
-    if ((ret = avformat_find_stream_info(obj->format, NULL))) {
-        rb_raise(rb_eException, "%s", av_err2str(ret));
-    }
 
     int stream_index = -1;
 
