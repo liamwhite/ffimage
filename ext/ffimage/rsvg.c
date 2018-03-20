@@ -44,7 +44,15 @@ static VALUE rb_librsvg_initialize(VALUE self, VALUE buf)
     memcpy(obj->svg_buf, RSTRING_PTR(buf), obj->svg_size);
 
     // Read the SVG
-    obj->handle = rsvg_handle_new_from_data(obj->svg_buf, obj->svg_size, &error);
+    obj->handle = rsvg_handle_new_with_flags(RSVG_HANDLE_FLAG_UNLIMITED);
+    rsvg_handle_write(obj->handle, obj->svg_buf, obj->svg_size, &error);
+
+    if (error) {
+        rb_raise(rb_eRuntimeError, "%s", error->message);
+    }
+
+    error = NULL;
+    rsvg_handle_close(obj->handle, &error);
 
     if (error) {
         rb_raise(rb_eRuntimeError, "%s", error->message);
