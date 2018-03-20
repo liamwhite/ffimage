@@ -31,7 +31,7 @@ static void rb_libjpeg_error(j_common_ptr cinfo)
     char last_error[JMSG_LENGTH_MAX] = { 0 };
     cinfo->err->format_message(cinfo, last_error);
 
-    rb_raise(rb_eException, "%s", last_error);
+    rb_raise(rb_eRuntimeError, "%s", last_error);
 }
 
 static VALUE rb_libjpeg_initialize(VALUE self, VALUE buf)
@@ -60,7 +60,7 @@ static VALUE rb_libjpeg_initialize(VALUE self, VALUE buf)
     rc = jpeg_read_header(&obj->cinfo, TRUE);
     if (rc != 1) {
         jpeg_destroy_decompress(&obj->cinfo);
-        rb_raise(rb_eException, "Failed to read JPEG");
+        rb_raise(rb_eRuntimeError, "Failed to read JPEG");
     }
 
     jpeg_start_decompress(&obj->cinfo);

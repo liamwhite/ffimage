@@ -47,7 +47,7 @@ static VALUE rb_librsvg_initialize(VALUE self, VALUE buf)
     obj->handle = rsvg_handle_new_from_data(obj->svg_buf, obj->svg_size, &error);
 
     if (error) {
-        rb_raise(rb_eException, "%s", error->message);
+        rb_raise(rb_eRuntimeError, "%s", error->message);
     }
 
     return Qnil;

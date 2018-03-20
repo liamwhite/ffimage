@@ -62,11 +62,11 @@ static VALUE rb_libavformat_initialize(VALUE self, VALUE buf)
     int ret;
 
     if ((ret = avformat_open_input(&obj->format, NULL, NULL, NULL))) {
-        rb_raise(rb_eException, "%s", av_err2str(ret));
+        rb_raise(rb_eRuntimeError, "%s", av_err2str(ret));
     }
 
     if ((ret = avformat_find_stream_info(obj->format, NULL))) {
-        rb_raise(rb_eException, "%s", av_err2str(ret));
+        rb_raise(rb_eRuntimeError, "%s", av_err2str(ret));
     }
 
     return Qnil;
@@ -87,7 +87,7 @@ static VALUE rb_libavformat_dimensions(VALUE self)
     }
 
     if (stream_index == -1) {
-        rb_raise(rb_eException, "Could not find suitable video stream");
+        rb_raise(rb_eRuntimeError, "Could not find suitable video stream");
     }
 
     AVStream* stream = obj->format->streams[stream_index];
