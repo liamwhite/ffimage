@@ -1,8 +1,6 @@
 #include "ruby.h"
 #include <libavformat/avformat.h>
 
-extern VALUE rb_cFFImage;
-
 struct libavformat_object
 {
     size_t vid_size;
@@ -99,7 +97,7 @@ static VALUE rb_libavformat_dimensions(VALUE self)
     return rb_ary_new3(2, INT2FIX(width), INT2FIX(height));
 }
 
-extern void Init_libffmpeg()
+extern void Init_libffmpeg(VALUE rb_cFFImage)
 {
     av_register_all();
     av_log_set_level(AV_LOG_QUIET);

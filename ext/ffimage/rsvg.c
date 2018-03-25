@@ -1,8 +1,6 @@
 #include "ruby.h"
 #include <librsvg/rsvg.h>
 
-extern VALUE rb_cFFImage;
-
 struct librsvg_object
 {
     size_t svg_size;
@@ -75,7 +73,7 @@ static VALUE rb_librsvg_dimensions(VALUE self)
     return rb_ary_new3(2, INT2FIX(width), INT2FIX(height));
 }
 
-extern void Init_librsvg()
+extern void Init_librsvg(VALUE rb_cFFImage)
 {
     VALUE LibRSVG = rb_define_class_under(rb_cFFImage, "LibRSVG", rb_cObject);
     rb_define_alloc_func(LibRSVG, rb_librsvg_allocate);

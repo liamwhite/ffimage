@@ -1,8 +1,6 @@
 #include "ruby.h"
 #include <jpeglib.h>
 
-extern VALUE rb_cFFImage;
-
 struct libjpeg_object
 {
     size_t jpg_size;
@@ -79,7 +77,7 @@ static VALUE rb_libjpeg_dimensions(VALUE self)
     return rb_ary_new3(2, INT2FIX(width), INT2FIX(height));
 }
 
-extern void Init_libjpeg()
+extern void Init_libjpeg(VALUE rb_cFFImage)
 {
     VALUE LibJPEG = rb_define_class_under(rb_cFFImage, "LibJPEG", rb_cObject);
     rb_define_alloc_func(LibJPEG, rb_libjpeg_allocate);
