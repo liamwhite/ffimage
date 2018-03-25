@@ -26,6 +26,7 @@ static void rb_libgif_deallocate(VALUE ptr)
 {
     struct libgif_object *obj = (struct libgif_object *) ptr;
 
+    DGifCloseFile(obj->file_handle, NULL);
     xfree(obj->gif_buf);
     xfree(obj);
 }
@@ -54,7 +55,12 @@ static VALUE rb_libgif_initialize(VALUE self, VALUE buf)
 
     obj->file_handle = DGifOpen(obj, gif_input_func, &rc);
     if (!obj->file_handle) {
-        rb_raise(rb_eRuntimeError, "Error reading GIF: %s", GifErrorString(rc));
+        rb_raise(rb_eRuntimeError, "%s", GifErrorString(rc));
+    }
+
+    rc = DGifSlurp(obj->file_handle);
+    if (rc) {
+        rb_raise(rb_eRuntimeError, "%s", GifErrorString(rc));
     }
 
     return Qnil;
