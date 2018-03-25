@@ -11,6 +11,7 @@ struct libavformat_object
     AVFormatContext *format;
     AVIOContext *avio;
     uint8_t *avio_ctx_buffer;
+    int stream_index;
 };
 
 static int read_packet(void *opaque, uint8_t *buf, int buf_size)
@@ -58,6 +59,7 @@ static VALUE rb_libavformat_initialize(VALUE self, VALUE buf)
     obj->avio_ctx_buffer = av_malloc(4096);
     obj->avio   = avio_alloc_context(obj->avio_ctx_buffer, 4096, 0, obj, &read_packet, NULL, NULL);
     obj->format->pb = obj->avio;
+    obj->stream_index = -1;
 
     int ret;
 
@@ -69,6 +71,17 @@ static VALUE rb_libavformat_initialize(VALUE self, VALUE buf)
         rb_raise(rb_eRuntimeError, "%s", av_err2str(ret));
     }
 
+    for (int i = 0; i < obj->format->nb_streams; ++i) {
+        if (obj->format->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+            obj->stream_index = i;
+            break;
+        }
+    }
+
+    if (obj->stream_index == -1) {
+        rb_raise(rb_eRuntimeError, "Could not find suitable video stream");
+    }
+
     return Qnil;
 }
 
@@ -77,20 +90,7 @@ static VALUE rb_libavformat_dimensions(VALUE self)
     struct libavformat_object *obj;
     Data_Get_Struct(self, struct libavformat_object, obj);
 
-    int stream_index = -1;
-
-    for (int i = 0; i < obj->format->nb_streams; ++i) {
-        if (obj->format->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-            stream_index = i;
-            break;
-        }
-    }
-
-    if (stream_index == -1) {
-        rb_raise(rb_eRuntimeError, "Could not find suitable video stream");
-    }
-
-    AVStream* stream = obj->format->streams[stream_index];
+    AVStream* stream = obj->format->streams[obj->stream_index];
     AVCodecParameters* codec = stream->codecpar;
 
     size_t width  = codec->width;
