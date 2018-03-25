@@ -102,6 +102,8 @@ static VALUE rb_libavformat_dimensions(VALUE self)
 extern void Init_libffmpeg()
 {
     av_register_all();
+    av_log_set_level(AV_LOG_QUIET);
+
     VALUE LibFFMpeg = rb_define_class_under(rb_cFFImage, "LibFFMpeg", rb_cObject);
     rb_define_alloc_func(LibFFMpeg, rb_libavformat_allocate);
     rb_define_method(LibFFMpeg, "initialize", rb_libavformat_initialize, 1);
