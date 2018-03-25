@@ -90,8 +90,8 @@ static VALUE rb_libavformat_dimensions(VALUE self)
     struct libavformat_object *obj;
     Data_Get_Struct(self, struct libavformat_object, obj);
 
-    AVStream* stream = obj->format->streams[obj->stream_index];
-    AVCodecParameters* codec = stream->codecpar;
+    AVStream *stream = obj->format->streams[obj->stream_index];
+    AVCodecParameters *codec = stream->codecpar;
 
     size_t width  = codec->width;
     size_t height = codec->height;
